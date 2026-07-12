@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="ChatAppWithDeafStudents.Client.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ChatAppWithDeafStudents.Client"
+    xmlns:pages="clr-namespace:ChatAppWithDeafStudents.Client.Pages"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate pages:LoginPage}"
+        Route="MainPage" />
+
+    <ShellContent
+        Title="ListChat"
+        ContentTemplate="{DataTemplate pages:ListChatPage}"
+        Route="ListChatPage" />
+
+    <ShellContent
+        Title="Chat"
+        ContentTemplate="{DataTemplate pages:ChatPage}"
+        Route="ChatPage" />
+
+</Shell>

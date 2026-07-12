@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="ChatAppWithDeafStudents.Client/ChatAppWithDeafStudents.Client.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="ChatAppWithDeafStudents/ChatAppWithDeafStudents.API.csproj">
+    <BuildDependency Project="ChatAppWithDeafStudents.Client/ChatAppWithDeafStudents.Client.csproj" />
+  </Project>
+</Solution>

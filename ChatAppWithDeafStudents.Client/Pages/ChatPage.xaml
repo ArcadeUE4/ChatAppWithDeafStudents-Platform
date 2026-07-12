@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChatAppWithDeafStudents.Client.Pages.ChatPage"
+             xmlns:helper="clr-namespace:ChatAppWithDeafStudents.Client.Helpers"
+             xmlns:converters="clr-namespace:ChatAppWithDeafStudents.Client.Converters"
+             xmlns:viewModel="clr-namespace:ChatAppWithDeafStudents.Client.ViewModel"
+             Title="Chat"
+             Background="#13232f">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:MessagePositionConverter x:Key="MessagePositionConverter"/>
+            <converters:MessageColorConverter x:Key="MessageColorConverter"/>
+            <converters:SenderNameVisibilityConverter x:Key="SenderNameVisibilityConverter"/>
+            <converters:ChatTitleConverter x:Key="ChatTitleConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <RefreshView Margin="0" 
+                 IsRefreshing="{Binding IsRefreshing}"
+                 Command="{Binding RefreshCommand}">
+        <Grid RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+
+            <!-- Chat Header -->
+            <Grid Padding="15,10" 
+                  BackgroundColor="#1a2f3a"
+                  ColumnSpacing="10">
+                 <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="Auto"/>
+                     <ColumnDefinition Width="*"/>
+                     <ColumnDefinition Width="Auto"/>
+                 </Grid.ColumnDefinitions>
+
+                 <!-- Chat Icon -->
+                 <Label Grid.Column="0"
+                        FontFamily="MaterialIcons"
+                        Text="{x:Static helper:IconFontHelper.Message}"
+                        FontSize="20"
+                        TextColor="White"
+                        VerticalOptions="Center"
+                        VerticalTextAlignment="Center"/>
+
+                 <!-- Chat Name -->
+                <Label Grid.Column="1"
+                        FontAttributes="Bold" 
+                        FontSize="16">
+                    <Label.Text>
+                        <MultiBinding Converter="{StaticResource ChatTitleConverter}">
+                            <Binding Path="ChatTitle"/>
+                            <Binding Path="FriendInfo.FullName"/>
+                        </MultiBinding>
+                    </Label.Text>
+                    <Label.TextColor>White</Label.TextColor>
+                    <Label.VerticalOptions>Center</Label.VerticalOptions>
+                </Label>
+            </Grid>
+
+            <!-- Message list -->
+            <CollectionView Grid.Row="1" 
+                            Margin="0,10,0,10" 
+                            ItemsSource="{Binding Messages}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout ItemSpacing="8" Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10,0" 
+                                     Orientation="Vertical">
+                            <!-- Sender -->
+                            <Label FontSize="12" 
+                                   Text="{Binding Sender.FullName}"
+                                   TextColor="Gray"
+                                   Margin="10,5,0,0"
+                                   IsVisible="{Binding SenderId, 
+                                Converter={StaticResource SenderNameVisibilityConverter}}"
+                                   HorizontalOptions="{Binding SenderId, 
+                                Converter={StaticResource MessagePositionConverter}}"/>
+
+                            <Grid HorizontalOptions="{Binding SenderId, 
+                                Converter={StaticResource MessagePositionConverter}}"
+                                  MaximumWidthRequest="300"
+                                  ColumnSpacing="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Message time -->
+                                <Label Grid.Column="0"
+                                       Margin="0,0,0,0" 
+                                       FontSize="11" 
+                                       Text="{Binding CreatedAt, 
+                                    StringFormat='{0:HH:mm}'}"
+                                       TextColor="Gray"
+                                       VerticalTextAlignment="End"/>
+
+
+                                <Border Grid.Column="1"
+                                        Padding="12,8,12,8" 
+                                        StrokeShape="RoundRectangle 15,15,15,15" 
+                                        StrokeThickness="0"
+                                        BackgroundColor="{Binding SenderId, 
+                                    Converter={StaticResource MessageColorConverter}}"
+                                        Margin="0,5,0,0">
+                                    <Label FontSize="14" 
+                                           Text="{Binding Content}" 
+                                           TextColor="White"
+                                           LineBreakMode="WordWrap"/>
+                                </Border>
+                            </Grid>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Message placeholder -->
+            <Grid Grid.Row="2" 
+                  Padding="10,10"
+                  ColumnSpacing="10"
+                  BackgroundColor="#1a2f3a">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Message text field -->
+                <Border StrokeShape="RoundRectangle 20" 
+                        StrokeThickness="0" 
+                        BackgroundColor="#2a3f4d"
+                        HeightRequest="40"
+                        Padding="10,0">
+                    <Entry Placeholder="Введите сообщение..." 
+                           PlaceholderColor="Gray"
+                           Text="{Binding Content}" 
+                           TextColor="White" 
+                           VerticalOptions="Center"
+                           FontSize="14"/>
+                </Border>
+
+                <!-- Send button -->
+                <Button Grid.Column="1" 
+                        BackgroundColor="#007AFF" 
+                        Command="{Binding SendMessageCommand}"
+                        CornerRadius="20" 
+                        HeightRequest="40" 
+                        WidthRequest="40"
+                        ToolTipProperties.Text="Send">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" 
+                                       Glyph="{x:Static helper:IconFontHelper.Send}" 
+                                       Size="18"
+                                       Color="White"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <!-- Voice message button -->
+                <Button Grid.Column="2" 
+                        BackgroundColor="#34C759" 
+                        Command="{Binding ListenCommand}"
+                        CornerRadius="20" 
+                        HeightRequest="40" 
+                        WidthRequest="40"
+                        ToolTipProperties.Text="Voice">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                       Glyph="{x:Static helper:IconFontHelper.Mic}" 
+                                       Size="18"
+                                       Color="White"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+        </Grid>
+    </RefreshView>
+</ContentPage>
