@@ -1,3 +1,4 @@
+
 # Chat App With Deaf Students
 
 A modern, accessible communication platform built specifically for deaf students to connect, collaborate, and communicate effectively. This project features a robust ASP.NET Core API backend with real-time messaging capabilities and a .NET MAUI client application.
@@ -6,13 +7,10 @@ A modern, accessible communication platform built specifically for deaf students
 
 - **Real-time Messaging**: Built-in SignalR support for instant message delivery
 - **Speech-to-Text (STT)**: Convert audio messages to text for accessibility
-- **Text-to-Speech (TTS)**: Convert text messages to speech output
 - **Secure Authentication**: JWT-based authentication with BCrypt password hashing
 - **User Management**: Comprehensive user profile and role-based access control
 - **Accessible Design**: Developed with accessibility in mind for deaf users
 - **API Documentation**: Interactive Swagger/OpenAPI documentation
-- **Cross-Platform**: .NET MAUI client for multi-platform support
-- **Data Validation**: FluentValidation for robust input validation
 - **Database**: SQL Server with Entity Framework Core ORM
 
 ## 🛠️ Tech Stack
@@ -25,7 +23,6 @@ A modern, accessible communication platform built specifically for deaf students
 - **SignalR** - Real-time communication
 - **JWT Authentication** - Secure API authentication
 - **Swagger/OpenAPI** - API documentation
-- **FluentValidation** - Input validation
 - **BCrypt.Net-Core** - Password hashing
 
 ### Client
@@ -164,175 +161,6 @@ docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong@Password123" -p 1
 - `GET /api/messages/{id}` - Get message by ID
 - `DELETE /api/messages/{id}` - Delete message
 
-*For complete API documentation, visit `/swagger` endpoint when the API is running.*
-
-## 🎤 Speech-to-Text (STT)
-
-Speech-to-Text conversion allows users to dictate messages, which are then transcribed to text. This is especially useful for deaf students who may prefer to use voice input through assistive technologies.
-
-### STT Endpoints
-
-```
-POST /api/stt/transcribe - Convert audio to text
-GET /api/stt/languages - Get supported languages
-POST /api/stt/process-message - Process message with audio attachment
-```
-
-### Audio Upload and Transcription
-
-**Request:**
-```
-POST /api/stt/transcribe
-Content-Type: multipart/form-data
-
-Parameter: audio (binary file)
-Parameter: language (string, e.g., "en-US", "ru-RU")
-Header: Authorization: Bearer JWT_TOKEN
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "text": "Hello, how are you?",
-  "confidence": 0.95,
-  "language": "en-US",
-  "duration": 3500,
-  "timestamp": "2024-01-15T10:30:00Z"
-}
-```
-
-### Client Implementation (.NET MAUI)
-
-```csharp
-public async Task<string> TranscribeAudioAsync(string audioFilePath, string language = "en-US")
-{
-    using (var client = new HttpClient())
-    {
-        client.DefaultRequestHeaders.Authorization = 
-            new AuthenticationHeaderValue("Bearer", _authToken);
-
-        using (var form = new MultipartFormDataContent())
-        {
-            var fileStream = File.OpenRead(audioFilePath);
-            form.Add(new StreamContent(fileStream), "audio", Path.GetFileName(audioFilePath));
-            form.Add(new StringContent(language), "language");
-
-            var response = await client.PostAsync("/api/stt/transcribe", form);
-            response.EnsureSuccessStatusCode();
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<TranscriptionResult>(jsonResponse);
-
-            return result.Text;
-        }
-    }
-}
-
-public class TranscriptionResult
-{
-    public bool Success { get; set; }
-    public string Text { get; set; }
-    public double Confidence { get; set; }
-    public string Language { get; set; }
-    public int Duration { get; set; }
-    public DateTime Timestamp { get; set; }
-}
-```
-
-### Supported Languages
-
-| Code | Language |
-|------|----------|
-| en-US | English (US) |
-| en-GB | English (UK) |
-| ru-RU | Russian |
-| fr-FR | French |
-| de-DE | German |
-| es-ES | Spanish |
-| zh-CN | Chinese (Simplified) |
-| ja-JP | Japanese |
-
-### STT Configuration
-
-```json
-{
-  "Stt": {
-    "Enabled": true,
-    "Provider": "AzureCognitive",
-    "ApiKey": "your-stt-api-key",
-    "Region": "eastus",
-    "SupportedLanguages": ["en-US", "ru-RU", "fr-FR", "de-DE"],
-    "MaxAudioDuration": 60000,
-    "MaxFileSizeMB": 25
-  }
-}
-```
-
-### Environment Variables for STT
-```env
-# Azure Cognitive Services (or your STT provider)
-STT_PROVIDER=AzureCognitive
-STT_API_KEY=your-stt-api-key
-STT_REGION=eastus
-STT_ENABLED=true
-```
-
-### Recording Audio in .NET MAUI
-
-```csharp
-public class AudioRecorder
-{
-    private MediaManager _mediaManager;
-    private string _outputPath;
-
-    public async Task StartRecordingAsync()
-    {
-        _outputPath = Path.Combine(
-            FileSystem.AppDataDirectory, 
-            $"audio_{DateTime.Now.Ticks}.wav"
-        );
-
-        await _mediaManager.StartRecordingAsync(_outputPath);
-    }
-
-    public async Task<string> StopRecordingAsync()
-    {
-        await _mediaManager.StopRecordingAsync();
-        return _outputPath;
-    }
-
-    public async Task<string> TranscribeRecordingAsync(string authToken)
-    {
-        var sttService = new SpeechToTextService(authToken);
-        return await sttService.TranscribeAudioAsync(_outputPath);
-    }
-}
-```
-
-## 📝 Configuration
-
-### appsettings.json
-```json
-{
-  "Jwt": {
-	"Key": "your-secret-key-minimum-32-characters-long",
-	"Issuer": "ChatAppWithDeafStudents",
-	"Audience": "ChatAppWithDeafStudentsUsers",
-	"ExpirationMinutes": 60
-  },
-  "Cors": {
-	"AllowedOrigins": ["http://localhost:3000", "http://localhost:5000"]
-  },
-  "Stt": {
-	"Enabled": true,
-	"Provider": "AzureCognitive",
-	"SupportedLanguages": ["en-US", "ru-RU", "fr-FR", "de-DE"],
-	"MaxAudioDuration": 60000,
-	"MaxFileSizeMB": 25
-  }
-}
-```
 
 ## 🧪 Testing
 
@@ -388,13 +216,5 @@ docker-compose up -d
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👥 Support
-
-For support, please open an issue in the GitHub repository or contact the development team.
-
----
-
-**Built with ❤️ for Deaf Students Community**
 
 Last Updated: 2024
