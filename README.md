@@ -3,9 +3,9 @@
 
 A modern, accessible communication platform built specifically for deaf students to connect, collaborate, and communicate effectively. This project features a robust ASP.NET Core API backend with real-time messaging capabilities and a .NET MAUI client application.
 
-[1](Screenshots\photo_1_2026-07-13_02-46-26.jpg)
-[2](Screenshots\photo_2_2026-07-13_02-46-26.jpg)
-[3](Screenshots\photo_3_2026-07-13_02-46-26.jpg)
+![1](Screenshots\photo_1_2026-07-13_02-46-26.jpg)
+![2](Screenshots\photo_2_2026-07-13_02-46-26.jpg)
+![3](Screenshots\photo_3_2026-07-13_02-46-26.jpg)
 
 ## 🌟 Features
 
