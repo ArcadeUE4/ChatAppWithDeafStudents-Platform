@@ -17,9 +17,6 @@ namespace ChatAppWithDeafStudents.Client.Services
             _httpClient = httpClient;
         }
 
-        /// <summary>
-        /// Gets the stored access token from secure storage.
-        /// </summary>
         private async Task<string> GetStoredTokenAsync()
         {
             try
@@ -33,105 +30,37 @@ namespace ChatAppWithDeafStudents.Client.Services
             }
         }
 
-        /// <summary>
-        /// Gets the stored access token synchronously (for SignalR).
-        /// </summary>
         public async Task<string> GetAccessTokenAsync()
         {
             return await GetStoredTokenAsync();
         }
 
-        /// <summary>
-        /// Stores the access token in secure storage.
-        /// </summary>
+
         private async Task StoreTokenAsync(string token)
         {
-            try
+            if (!string.IsNullOrEmpty(token))
             {
-                if (!string.IsNullOrEmpty(token))
-                {
-                    await SecureStorage.SetAsync(TokenStorageKey, token);
-                }
-            }
-            catch
-            {
-                // Logging could be added here if needed
+                await SecureStorage.SetAsync(TokenStorageKey, token);
             }
         }
 
-        /// <summary>
-        /// Stores the refresh token in secure storage.
-        /// </summary>
         private async Task StoreRefreshTokenAsync(string refreshToken)
         {
-            try
+            if (!string.IsNullOrEmpty(refreshToken))
             {
-                if (!string.IsNullOrEmpty(refreshToken))
-                {
-                    await SecureStorage.SetAsync(RefreshTokenStorageKey, refreshToken);
-                }
-            }
-            catch
-            {
-                // Logging could be added here if needed
+                await SecureStorage.SetAsync(RefreshTokenStorageKey, 
+                    refreshToken);
             }
         }
 
-        /// <summary>
-        /// Gets the stored refresh token from secure storage.
-        /// </summary>
-        public async Task<string> GetRefreshTokenAsync()
-        {
-            try
-            {
-                var token = await SecureStorage.GetAsync(RefreshTokenStorageKey);
-                return token ?? string.Empty;
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Stores the user email in secure storage.
-        /// </summary>
         private async Task StoreUserEmailAsync(string email)
         {
-            try
+            if (!string.IsNullOrEmpty(email))
             {
-                if (!string.IsNullOrEmpty(email))
-                {
-                    await SecureStorage.SetAsync(UserEmailStorageKey, email);
-                }
-            }
-            catch
-            {
-                // Logging could be added here if needed
+                await SecureStorage.SetAsync(UserEmailStorageKey, email);
             }
         }
 
-        /// <summary>
-        /// Gets the stored user email from secure storage.
-        /// </summary>
-        public async Task<string> GetUserEmailAsync()
-        {
-            try
-            {
-                var email = await SecureStorage.GetAsync(UserEmailStorageKey);
-                return email ?? string.Empty;
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Аутенфикация запроса на вход.
-        /// </summary>
-        /// <param name="request">Запрос на вход.</param>
-        /// <returns></returns>
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest request)
         {
                 var json = JsonConvert.SerializeObject(request);
@@ -150,18 +79,16 @@ namespace ChatAppWithDeafStudents.Client.Services
 
                 result.StatusCode = (int)response.StatusCode;
 
-                if (result.StatusCode == 200 && !string.IsNullOrEmpty(result.Token))
+                if (result.StatusCode == 200 && 
+                !string.IsNullOrEmpty(result.Token))
                 {
-                    // Store access token in secure storage
                     await StoreTokenAsync(result.Token);
-
-                    // Store refresh token in secure storage
+   
                     if (!string.IsNullOrEmpty(result.RefreshTokenValue))
                     {
                         await StoreRefreshTokenAsync(result.RefreshTokenValue);
                     }
-
-                    // Store user email in secure storage
+                    
                     if (!string.IsNullOrEmpty(result.Email))
                     {
                         await StoreUserEmailAsync(result.Email);
@@ -169,7 +96,6 @@ namespace ChatAppWithDeafStudents.Client.Services
                 }
 
                 return result;
-
         }
 
         public async Task<TResponse> CallWebApi<TRequest, TResponse>(

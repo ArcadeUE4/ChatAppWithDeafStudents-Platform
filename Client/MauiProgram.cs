@@ -22,14 +22,14 @@ namespace ChatAppWithDeafStudents.Client
                     fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 });
 
-            // Загружаем конфигурацию
+
             var config = LoadConfiguration();
             var apiSettings = config.GetSection("ApiSettings").Get<ApiSettings>() ?? new ApiSettings();
 
-            // Регистрируем конфигурацию в DI контейнере
+
             builder.Services.AddSingleton(apiSettings);
 
-            // Конфигурируем HttpClient с базовым адресом из appsettings
+ 
             builder.Services.AddHttpClient<ServProvider>(client =>
             {
                 client.BaseAddress = new Uri(apiSettings.BaseUrl);
@@ -69,9 +69,6 @@ namespace ChatAppWithDeafStudents.Client
             return builder.Build();
         }
 
-        /// <summary>
-        /// Loading configuration from appsettings.json
-        /// </summary>
         private static IConfigurationRoot LoadConfiguration()
         {
             var assembly = typeof(MauiProgram).Assembly;
