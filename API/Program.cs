@@ -68,7 +68,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var authHeader = context.Request.Headers["Authorization"].ToString();
 
                 // For SignalR, also check query string token
-                if (string.IsNullOrEmpty(authHeader) && context.Request.Query.TryGetValue("access_token", out var queryToken))
+                if (string.IsNullOrEmpty(authHeader) && context.Request.Query.TryGetValue(
+                    "access_token", out var queryToken))
                 {
                     context.Token = queryToken.ToString();
                 }

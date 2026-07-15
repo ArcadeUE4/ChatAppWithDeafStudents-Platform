@@ -4,12 +4,12 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 
-COPY ["ChatAppWithDeafStudents.API.csproj", "ChatAppWithDeafStudents/"]
-COPY ["ChatAppWithDeafStudents.Client/ChatAppWithDeafStudents.Client.csproj", "ChatAppWithDeafStudents.Client/"]
+COPY ["API.csproj", "ChatAppWithDeafStudents/"]
+COPY ["Client/.Client.csproj", "ChatAppWithDeafStudents.Client/"]
 
 
 WORKDIR /src/ChatAppWithDeafStudents
-RUN dotnet restore "ChatAppWithDeafStudents.API.csproj"
+RUN dotnet restore "API.csproj"
 
 
 WORKDIR /src
@@ -17,11 +17,11 @@ COPY . .
 
 
 WORKDIR /src/ChatAppWithDeafStudents
-RUN dotnet build "ChatAppWithDeafStudents.API.csproj" -c Release -o /app/build
+RUN dotnet build "API.csproj" -c Release -o /app/build
 
 
 FROM build AS publish
-RUN dotnet publish "ChatAppWithDeafStudents.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
@@ -46,4 +46,4 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ASPNETCORE_URLS=http://+:8080
 
 
-ENTRYPOINT ["dotnet", "ChatAppWithDeafStudents.API.dll"]
+ENTRYPOINT ["dotnet", "API.dll"]

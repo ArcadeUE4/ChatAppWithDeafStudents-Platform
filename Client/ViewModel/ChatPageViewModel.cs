@@ -251,7 +251,6 @@ namespace ChatAppWithDeafStudents.Client.ViewModel
                     $"ChatId={ChatId}, " +
                     $"SenderId={SenderId}");
 
-                
                 if (_chatHub != null)
                 {
                     try
@@ -262,19 +261,8 @@ namespace ChatAppWithDeafStudents.Client.ViewModel
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "ChatHub Connect error");
-                        await Shell.Current.DisplayAlertAsync("Error connection", $"SignalR: {ex.Message}", "OK");
-                        return;
-                    }
-
-                    try
-                    {
-                        await _chatHub.JoinChat(ChatId);
-                        _logger.LogInformation($"Joined chat: {ChatId}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "JoinChat error");
-                        await Shell.Current.DisplayAlertAsync("Error connection", $"JoinChat: {ex.Message}", "OK");
+                        await Shell.Current.DisplayAlertAsync("Error connection", 
+                            $"SignalR: {ex.Message}", "OK");
                         return;
                     }
                 }

@@ -17,7 +17,7 @@ namespace ChatAppWithDeafStudents.Client.Services
             _logger = logger;
             _apiSettings = apiSettings;
 
-            // Используем URL из конфигурации
+            // using URL from cofiguration
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(_apiSettings.SignalRHub, options =>
                 {
@@ -38,13 +38,13 @@ namespace ChatAppWithDeafStudents.Client.Services
             _hubConnection.On<Guid, string>("ReceiveMessage", ReceiveMessageHandler);
         }
 
-        // Приватный метод для обработки входящих сообщений
+        // Private method to recive message
         private void ReceiveMessageHandler(Guid senderId, string content)
         {
             try
             {
                 _logger.LogDebug($"Received message from {senderId}: {content}");
-                // Вызываем публичное событие если оно установлено
+                // Invoke event
                 OnReceiveMessage?.Invoke(senderId, content);
             }
             catch (Exception ex)
@@ -100,20 +100,6 @@ namespace ChatAppWithDeafStudents.Client.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to send message");
-                throw;
-            }
-        }
-
-        public async Task JoinChat(Guid chatId)
-        {
-            try
-            {
-                await _hubConnection.InvokeAsync("JoinChat", chatId);
-                _logger.LogInformation($"Joined chat: {chatId}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to join chat");
                 throw;
             }
         }

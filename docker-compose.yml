@@ -116,31 +116,6 @@ services:
       description: "Chat App API (.NET 10 ASP.NET Core)"
       maintainer: "ArcadeUE4"
 
-  # Optional: Nginx Reverse Proxy (for production-like setup)
-  nginx:
-    image: nginx:latest
-    container_name: chatapp_nginx
-
-    ports:
-      - "${NGINX_PORT:-80}:80"
-      - "${NGINX_SSL_PORT:-443}:443"
-
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-
-    depends_on:
-      - api
-
-    networks:
-      - chatapp-network
-
-    restart: unless-stopped
-
-    labels:
-      description: "Nginx reverse proxy for API"
-
-    profiles:
-      - prod
 
 # Volumes for data persistence
 volumes:
